@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Odyssey</title>
+    <link
+    rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    <link rel="icon" type ="image/png" href="icon.jpg" />
+    <style>
+        body {
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            margin: 0;
+        }
+        
+        /* Video Background - Fixed behind everything */
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 15, 40, 0.7);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            border-radius: 15px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-top: 50px;
+        }
+
+        /* Simple Quote Container */
+        .container-quote {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            max-width: 300px;
+            z-index: 100;
+        }
+
+        .quote-section {
+            background: rgba(145, 144, 144, 0.7);
+            border-radius: 10px;
+            padding: 20px;
+            border-left: 4px solid #feb47b;
+        }
+
+        .quote-main {
+            font-size: 1.2rem;
+            line-height: 1.5;
+            margin-bottom: 10px;
+            color: #ffffff;
+            font-style: italic;
+        }
+
+        .quote-author {
+            font-size: 0.9rem;
+            color: #feb47b;
+            text-align: right;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            margin-left: 120px;
+            margin-right: 120px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            margin-left: 120px;
+            margin-right: 120px;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff7e5f, #feb47b, #ffd700, #ff7e5f);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 2s ease-in-out infinite alternate;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            margin-left: 120px;
+            margin-right: 120px;
+            color: #ffffff;
+            font-weight: 300;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            letter-spacing: 1px;
+        } 
+        .foot {
+            font-size: 0.5rem;
+            margin-bottom: 20px;
+            margin-left: 120px;
+            margin-right: 120px;
+            color: #ffffff;
+            font-weight: 300;
+            padding: 15px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(5px);;
+            letter-spacing: 1px;
+        } 
+
+        @keyframes glow {
+    0% {
+        text-shadow: 0 0 20px rgba(255, 215, 0, 0.5),
+                     0 0 40px rgba(255, 126, 95, 0.3);
+    }
+    100% {
+        text-shadow: 0 0 30px rgba(255, 215, 0, 0.8),
+                     0 0 60px rgba(255, 126, 95, 0.5),
+                     0 0 80px rgba(254, 180, 123, 0.3);
+    }
+        }
+
+        Changesheader {
+            text-align: center;
+            margin-bottom: 20px;
+            margin-left: 150px;
+            margin-right: 150px;
+        }
+        
+        /* Navigation Styles */
+        nav {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        /* Menu Icon (Hamburger) */
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 8px;
+        }
+
+        .menu-icon:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .menu-icon span {
+            display: block;
+            width: 20px;
+            height: 2px;
+            background: #ffd700;
+            transition: all 0.3s ease;
+        }
+
+        .menu-icon:hover span {
+            background: #ffed4e;
+        }
+
+        /* Dropdown Menu - Hidden by default */
+        #drop_down_menu {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: rgba(145, 144, 144, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 10px 0;
+            min-width: 200px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        /* Show menu on hover */
+        nav:hover #drop_down_menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Menu Items */
+        #drop_down_menu li {
+            list-style: none;
+            margin: 0;
+        }
+
+        #drop_down_menu li a {
+            display: block;
+            padding: 12px 20px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        #drop_down_menu li a:hover {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+            border-left-color: #ffd700;
+            padding-left: 25px;
+        }
+
+        /* Menu item separators */
+        #drop_down_menu li:not(:last-child) {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+    
+    
+        button {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .instructions {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+
+        .game-options {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .option-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .option-card:hover {
+            transform: translateY(-5px);
+            border-color: #ffd700;
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .option-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            padding: 12px 25px;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            text-decoration: none;
+            display: inline-block;
+            margin-top: 15px;
+        }
+
+        @media (max-width: 768px) {
+        .game-options {
+             flex-direction: column;
+             align-items: center;
+        }
+    
+        .option-card {
+        max-width: 100%;
+       }
+    }
+    </style>
+</head>
+<body>
+    <!-- Video Background -->
+    <div class="video-background">
+        <video autoplay muted loop id="bgVideo">
+            <source src="videoshort.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+
+    <!-- Douglas Adams Quote -->
+    <div class="container-quote">
+        <div class="quote-section">
+            <div class="quote-main">
+                "Forty-two," said Deep Thought, with infinite majesty and calm.”"
+            </div>
+            <div class="quote-author">
+                ― Douglas Adams, The Hitchhiker's Guide to the Galaxy
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Menu -->
+    <nav>
+        <div class="menu-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul id="drop_down_menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="game_animated_hiragana.html">Default Game</a></li>
+            <li><a href="your_game_animated.hiragana.html">Your Game</a></li>
+            <li><a href="about.html">Find out more</a></li>
+        </ul>
+    </nav>
+
+    <header>
+        <h1>Star Odyssey</h1>
+        <p class="subtitle">Collect Japanese characters to form the word equivalent to a proposed universe-related English word!</p>
+    </header>
+
+    <div class="container">
+        <div class="game-options">
+            <div class="option-card">
+                <h3>Play Default Game</h3>
+                <p>Start with our pre-loaded space-themed vocabulary</p>
+                <a href="game_animated_hiragana.html" class="btn">Launch Game</a>
+            </div>
+            
+            <div class="option-card">
+                <h3>Upload Your Words</h3>
+                <p>Use your own custom wordlist to practice</p>
+                <a href="your_game_animated.hiragana.html" class="btn">Upload Wordlist</a>
+            </div>
+        </div>
+
+        <div class="instructions">
+            <h2>How to Play</h2>
+            <p>1. Use the arrow keys to move the star character (★) around the game area.</p>
+            <p>2. Collect the hiragana characters that spell the Japanese word equivalent to the English word shown above.</p>
+            <p>3. Correct characters will turn green, incorrect ones will turn red.</p>
+            <p>4. Complete all 10 words to finish the game!</p>
+            <p>5. You can upload your word sets to practice!</p>
+        </div>
+    </div>
+</body>
+
+ <footer>
+    <p class= "foot"> Protected by creative commons licence </p>
+ </footer>

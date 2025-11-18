@@ -1,0 +1,941 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Default Game</title>
+    <link rel="icon" type ="image/png" href="icon.jpg" />
+    <style>
+        
+        /* Video Background - Fixed behind everything */
+
+        body {
+        display: flex;
+        flex-direction: column; /* Stack items vertically */
+        align-items: center;    /* Center horizontally */
+        justify-content: flex-start; /* Start from top */
+        min-height: 100vh;
+        margin: 0;
+        padding: 20px;
+        }
+
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -2;
+            overflow: hidden;
+        }
+
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 15, 40, 0.7);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 900px;
+            width: 100%;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            margin-top: 20px;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            margin-bottom: 15px;
+            font-weight: 900;
+            background: linear-gradient(45deg, #ff7e5f, #feb47b, #ffd700, #ff7e5f);
+            background-size: 300% 300%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: glow 2s ease-in-out infinite alternate;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            letter-spacing: 2px;
+        }
+
+        .subtitle {
+            font-size: 1.4rem;
+            margin-bottom: 20px;
+            color: #ffffff;
+            font-weight: 300;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.7);
+            background: rgba(255, 255, 255, 0.1);
+            padding: 15px 25px;
+            border-radius: 50px;
+            backdrop-filter: blur(5px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            letter-spacing: 1px;
+        } 
+
+        @keyframes glow {
+    0% {
+        text-shadow: 0 0 20px rgba(255, 215, 0, 0.5),
+                     0 0 40px rgba(255, 126, 95, 0.3);
+    }
+    100% {
+        text-shadow: 0 0 30px rgba(255, 215, 0, 0.8),
+                     0 0 60px rgba(255, 126, 95, 0.5),
+                     0 0 80px rgba(254, 180, 123, 0.3);
+    }
+        }
+
+
+        Changesheader {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        /* Navigation Styles */
+        nav {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+
+        /* Menu Icon (Hamburger) */
+        .menu-icon {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 8px;
+        }
+
+        .menu-icon:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .menu-icon span {
+            display: block;
+            width: 20px;
+            height: 2px;
+            background: #ffd700;
+            transition: all 0.3s ease;
+        }
+
+        .menu-icon:hover span {
+            background: #ffed4e;
+        }
+
+        /* Dropdown Menu - Hidden by default */
+        #drop_down_menu {
+            position: absolute;
+            top: 50px;
+            right: 0;
+            background: rgba(145, 144, 144, 0.7);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 12px;
+            padding: 10px 0;
+            min-width: 200px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+        }
+
+        /* Show menu on hover */
+        nav:hover #drop_down_menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Menu Items */
+        #drop_down_menu li {
+            list-style: none;
+            margin: 0;
+        }
+
+        #drop_down_menu li a {
+            display: block;
+            padding: 12px 20px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            border-left: 3px solid transparent;
+        }
+
+        #drop_down_menu li a:hover {
+            background: rgba(255, 215, 0, 0.1);
+            color: #ffd700;
+            border-left-color: #ffd700;
+            padding-left: 25px;
+        }
+
+        /* Menu item separators */
+        #drop_down_menu li:not(:last-child) {
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .word-counter {
+            color: white;
+        } 
+
+        .game-info {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .current-word {
+            font-size: 1.8rem;
+            font-weight: bold;
+            text-align: center;
+            flex-grow: 1;
+        }
+        
+        .score {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #ffcc00;
+        }
+        
+        .game-area {
+            position: relative;
+            height: 500px;
+            background-color: rgba(145, 144, 144, 0.7);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 2px solid #b3b3b3;
+        }
+        
+        .player {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            font-size: 30px;
+            text-align: center;
+            line-height: 40px;
+            color: #ffcc00;
+            text-shadow: 0 0 10px #ff9900;
+            z-index: 100;
+            will-change: transform;
+        }
+        
+        .hiragana {
+            position: absolute;
+            font-size: 28px;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #333;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        .hiragana.correct {
+            background-color: #4CAF50;
+            color: white;
+            transform: scale(1.2);
+        }
+        
+        .hiragana.incorrect {
+            background-color: #f44336;
+            color: white;
+            transform: scale(0.8);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 25px;
+            font-size: 1.1rem;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            border: none;
+            border-radius: 50px;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+        
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(1px);
+        }
+        
+        #upload-btn {
+            background: linear-gradient(to right, #667eea, #764ba2);
+        }
+        
+        .instructions {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+        }
+        
+        .instructions h2 {
+            margin-bottom: 10px;
+            color: #ffcc00;
+        }
+        
+        .instructions p {
+            margin-bottom: 8px;
+            line-height: 1.5;
+        }
+        
+        .message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(145, 144, 144, 0.7);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.7);
+            z-index: 100;
+            display: none;
+            width: 80%;
+            max-width: 500px;
+        }
+        
+        .message h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: #4CAF50;
+        }
+        
+        .message img {
+            max-width: 80%;
+            border-radius: 10px;
+            margin: 15px 0;
+            border: 2px solid #ffcc00;
+        }
+        
+        .word-display {
+            font-size: 1.8rem;
+            margin: 15px 0;
+            color: #ffcc00;
+        }
+        
+        .progress {
+            height: 10px;
+            background-color: #909090;
+            border-radius: 5px;
+            margin: 20px 0;
+            overflow: hidden;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            width: 0%;
+            transition: width 0.5s;
+        }
+        
+        .start-message {
+            color: white !important;
+            font-weight: normal;
+            font-size: 1.5rem;
+            opacity: 0.8;
+            font-style: bold;
+        }
+
+        .round-scores {
+            margin-top: 15px;
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+        
+        .round-score-item {
+            display: flex;
+            justify-content: space-between;
+            margin: 5px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .game-area {
+                height: 400px;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .current-word {
+                font-size: 1.5rem;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            button {
+                width: 100%;
+                max-width: 250px;
+            }
+        }
+    </style>
+
+</head>
+<body>
+   <!-- Video Background -->
+    <div class="video-background">
+        <video autoplay muted loop id="bgVideo">
+            <source src="videoshort.mp4" type="video/mp4">
+        </video>
+        <div class="video-overlay"></div>
+    </div>
+<header>
+        <h1> The Game </h1>
+        <p class="subtitle"> Collect Japanese characters to form the word equivalent to a proposed universe-related English word!</p>
+    </header>  
+<nav>
+        <div class="menu-icon">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <ul id="drop_down_menu">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="game_animated_hiragana.html">Default Game</a></li>
+            <li><a href="your_game_animated_hiragana.html">Your Game</a></li>
+            <li><a href="about.html">Find out more</a></li>
+        </ul>
+</nav> 
+<body>
+     <div class="controls"><
+        <button id="upload-btn">Upload Your Wordlist</button>
+    /div>
+
+    <div class="container">
+        <div class="game-info">
+            <div class="score">Score: <span id="score-value">0</span></div>
+            <div class="current-word" id="current-word">Constellation</div>
+            <div class="progress-container">
+                <div class="progress">
+                    <div class="progress-bar" id="progress-bar"></div>
+                </div>
+                <div class="word-counter">Word <span id="word-count">1</span>/10</div>
+            </div>
+        </div>
+        
+        <div class="game-area" id="game-area">
+            <!-- Player and hiragana characters will be added here dynamically -->
+        </div>
+
+        <div class="controls">
+            <button id="start-btn">Start Game</button>
+            <button id="reset-btn">Reset Game</button>
+            <input type="file" id="csv-upload" accept=".csv" style="display: none;">
+        </div>
+    </div>
+    
+    <div class="message" id="message">
+        <h2 id="message-title">Correct!</h2>
+        <img id="message-image" src="" alt="Word Image">
+        <div class="word-display">
+            <span id="english-word"></span> - <span id="japanese-word"></span>
+        </div>
+        <p>Round Score: <span id="round-score">0</span></p>
+        <div id="round-scores-container" class="round-scores" style="display: none;">
+            <h3>Round Scores:</h3>
+            <div id="round-scores-list"></div>
+            <p><strong>Total Score: <span id="total-score">0</span></strong></p>
+        </div>
+        <button id="next-btn">Next Word</button>
+    </div>
+
+    <script>
+    // Game variables
+    let currentWordIndex = 0;
+    let totalScore = 0;
+    let currentRoundScore = 0;
+    let gameActive = false;
+    let playerPosition = { x: 400, y: 250 };
+    let collectedHiragana = [];
+    let hiraganaElements = [];
+    let currentCharacterIndex = 0;
+    let roundScores = [];
+    let wordData = [];
+    let hiraganaVelocities = [];
+    let animationId = null;
+
+    // DOM elements
+    const gameArea = document.getElementById('game-area');
+    const currentWordElement = document.getElementById('current-word');
+    const scoreElement = document.getElementById('score-value');
+    const wordCountElement = document.getElementById('word-count');
+    const progressBar = document.getElementById('progress-bar');
+    const startBtn = document.getElementById('start-btn');
+    const resetBtn = document.getElementById('reset-btn');
+    const message = document.getElementById('message');
+    const messageTitle = document.getElementById('message-title');
+    const messageImage = document.getElementById('message-image');
+    const englishWordElement = document.getElementById('english-word');
+    const japaneseWordElement = document.getElementById('japanese-word');
+    const roundScoreElement = document.getElementById('round-score');
+    const nextBtn = document.getElementById('next-btn');
+    const roundScoresContainer = document.getElementById('round-scores-container');
+    const roundScoresList = document.getElementById('round-scores-list');
+    const totalScoreElement = document.getElementById('total-score');
+    const csvUpload = document.getElementById('csv-upload');
+    const uploadBtn = document.getElementById('upload-btn');
+
+    // Parse custom uploaded CSV
+    function parseCustomCSV(csvText) {
+        try {
+            // Reset game state
+            currentWordIndex = 0;
+            totalScore = 0;
+            currentRoundScore = 0;
+            roundScores = [];
+            scoreElement.textContent = totalScore;
+            
+            // Parse CSV data
+            const lines = csvText.split('\n').slice(1); // Skip header row
+            wordData = [];
+            
+            lines.forEach(line => {
+                if (line.trim()) {
+                    const [english, reading, image] = line.split(';');
+                    
+                    if (english && reading && image && english.trim() !== '') {
+                        // Convert Japanese reading to hiragana array
+                        const hiragana = reading.trim().split('').filter(char => char !== ',');
+                        
+                        // Clean up image URL (remove Google redirect if present)
+                        let cleanImage = image.trim();
+                        if (cleanImage.includes('google.com/url?')) {
+                            // Extract actual image URL from Google redirect
+                            const urlMatch = cleanImage.match(/url=([^&]+)/);
+                            if (urlMatch) {
+                                cleanImage = decodeURIComponent(urlMatch[1]);
+                            }
+                        }
+                        
+                        wordData.push({
+                            english: english.trim(),
+                            japanese: reading.trim().split(',')[0], // Take first reading if multiple
+                            hiragana: hiragana,
+                            image: cleanImage
+                        });
+                    }
+                }
+            });
+            
+            console.log('Loaded custom words:', wordData);
+            
+            if (wordData.length > 0) {
+                currentWordElement.textContent = "Custom words loaded! Press Start to Play";
+                wordCountElement.textContent = `1/${wordData.length}`;
+                // Reset the file input
+                csvUpload.value = '';
+            } else {
+                currentWordElement.textContent = "No valid words found in CSV";
+            }
+            
+        } catch (error) {
+            console.error('Error parsing custom CSV:', error);
+            currentWordElement.textContent = "Error loading custom CSV file";
+        }
+    }
+
+    // Initialize game
+    function initGame() {
+        if (wordData.length === 0) {
+            currentWordElement.textContent = "Loading words...";
+            return;
+        }
+        
+        gameArea.innerHTML = '';
+        collectedHiragana = [];
+        hiraganaElements = [];
+        hiraganaVelocities = [];
+        currentCharacterIndex = 0;
+        currentRoundScore = 0;
+        
+        // Create player
+        const player = document.createElement('div');
+        player.className = 'player';
+        player.id = 'player';
+        player.innerHTML = '★';
+        player.style.left = playerPosition.x + 'px';
+        player.style.top = playerPosition.y + 'px';
+        gameArea.appendChild(player);
+        
+        // Set current word
+        const currentWord = wordData[currentWordIndex];
+        currentWordElement.textContent = currentWord.english;
+        wordCountElement.textContent = currentWordIndex + 1;
+        progressBar.style.width = `${(currentWordIndex / wordData.length) * 100}%`;
+        
+        // Create hiragana characters
+        const correctHiragana = currentWord.hiragana;
+        const allHiragana = [...correctHiragana];
+        
+        // Add some random hiragana to make it challenging
+        const randomHiragana = ["あ", "か", "さ", "た", "な", "は", "ま", "や", "ら", "わ"];
+        while (allHiragana.length < 12) {
+            const randomChar = randomHiragana[Math.floor(Math.random() * randomHiragana.length)];
+            if (!allHiragana.includes(randomChar)) {
+                allHiragana.push(randomChar);
+            }
+        }
+        
+        // Shuffle the hiragana
+        shuffleArray(allHiragana);
+        
+        // Position hiragana in the game area using grid system to prevent overlaps
+        allHiragana.forEach((char, index) => {
+            const hiraganaElement = document.createElement('div');
+            hiraganaElement.className = 'hiragana';
+            hiraganaElement.textContent = char;
+            hiraganaElement.dataset.char = char;
+
+            // Calculate grid positions
+            const gridCols = 4;
+            const cellWidth = gameArea.offsetWidth / gridCols;
+            const cellHeight = gameArea.offsetHeight / Math.ceil(allHiragana.length / gridCols);
+
+            const row = Math.floor(index / gridCols);
+            const col = index % gridCols;
+        
+            // Position within grid cell with some randomness
+            const x = 30 + (col * cellWidth) + Math.random() * (cellWidth - 100);
+            const y = 30 + (row * cellHeight) + Math.random() * (cellHeight - 100);
+
+            hiraganaElement.style.left = x + 'px';
+            hiraganaElement.style.top = y + 'px';
+
+            gameArea.appendChild(hiraganaElement);
+            hiraganaElements.push(hiraganaElement);
+            
+            // Initialize random velocity for chaotic movement
+            hiraganaVelocities.push({
+                x: (Math.random() - 0.5) * 5,
+                y: (Math.random() - 0.5) * 5
+            });
+        });
+        gameActive = true;
+        
+        // Start the animation loop for hiragana movement
+        if (animationId) {
+            cancelAnimationFrame(animationId);
+        }
+        animateHiragana();
+    }
+
+    // Shuffle array function
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    // Animate hiragana with chaotic movement
+    function animateHiragana() {
+        if (!gameActive) return;
+        
+        hiraganaElements.forEach((hiragana, index) => {
+            if (hiragana.classList.contains('correct') || hiragana.classList.contains('incorrect')) {
+                return;
+            }
+            
+            const rect = hiragana.getBoundingClientRect();
+            const gameRect = gameArea.getBoundingClientRect();
+            
+            // Update position based on velocity
+            let x = parseFloat(hiragana.style.left) + hiraganaVelocities[index].x;
+            let y = parseFloat(hiragana.style.top) + hiraganaVelocities[index].y;
+            
+            // Bounce off walls
+            if (x <= 0 || x >= gameArea.offsetWidth - rect.width) {
+                hiraganaVelocities[index].x *= -1.1;
+                x = Math.max(0, Math.min(x, gameArea.offsetWidth - rect.width));
+            }
+            
+            if (y <= 0 || y >= gameArea.offsetHeight - rect.height) {
+                hiraganaVelocities[index].y *= -1.1;
+                y = Math.max(0, Math.min(y, gameArea.offsetHeight - rect.height));
+            }
+            
+            // Occasionally change direction for more chaotic movement
+            if (Math.random() < 0.05) {
+                hiraganaVelocities[index].x = (Math.random() - 0.5) * 6;
+                hiraganaVelocities[index].y = (Math.random() - 0.5) * 6;
+            }
+            
+            hiragana.style.left = x + 'px';
+            hiragana.style.top = y + 'px';
+        });
+        
+        animationId = requestAnimationFrame(animateHiragana);
+    }
+
+    // Check collision between player and hiragana
+    function checkCollision() {
+        const player = document.getElementById('player');
+        const playerRect = player.getBoundingClientRect();
+        
+        hiraganaElements.forEach(hiragana => {
+            if (hiragana.classList.contains('correct') || hiragana.classList.contains('incorrect')) {
+                return;
+            }
+            
+            const hiraganaRect = hiragana.getBoundingClientRect();
+            
+            if (
+                playerRect.left < hiraganaRect.right &&
+                playerRect.right > hiraganaRect.left &&
+                playerRect.top < hiraganaRect.bottom &&
+                playerRect.bottom > hiraganaRect.top
+            ) {
+                const char = hiragana.dataset.char;
+                const correctHiragana = wordData[currentWordIndex].hiragana;
+                const expectedChar = correctHiragana[currentCharacterIndex];
+                
+                if (char === expectedChar) {
+                    hiragana.classList.add('correct');
+                    collectedHiragana.push(char);
+                    currentCharacterIndex++;
+                    currentRoundScore += 10;
+                    totalScore += 10;
+                    scoreElement.textContent = totalScore;
+                    
+                    updateNextCharacterHighlight();
+                    
+                    if (collectedHiragana.length === correctHiragana.length) {
+                        showMessage(true);
+                    }
+                } else {
+                    hiragana.classList.add('incorrect');
+                    currentRoundScore = Math.max(0, currentRoundScore - 5);
+                    totalScore = Math.max(0, totalScore - 5);
+                    scoreElement.textContent = totalScore;
+                    
+                    setTimeout(() => {
+                        hiragana.classList.remove('incorrect');
+                    }, 1000);
+                }
+            }
+        });
+    }
+
+    // Update highlighting for the next correct character
+    function updateNextCharacterHighlight() {
+        const correctHiragana = wordData[currentWordIndex].hiragana;
+        
+        hiraganaElements.forEach(hiragana => {
+            hiragana.classList.remove('next-correct');
+        });
+        
+        if (currentCharacterIndex < correctHiragana.length) {
+            const nextChar = correctHiragana[currentCharacterIndex];
+            hiraganaElements.forEach(hiragana => {
+                if (hiragana.dataset.char === nextChar && !hiragana.classList.contains('correct')) {
+                    hiragana.classList.add('next-correct');
+                }
+            });
+        }
+    }
+
+    // Show message when word is completed
+    function showMessage(isCorrect) {
+        gameActive = false;
+        cancelAnimationFrame(animationId);
+        message.style.display = 'block';
+        
+        if (isCorrect) {
+            messageTitle.textContent = "Correct!";
+            messageTitle.style.color = "#4CAF50";
+            roundScores[currentWordIndex] = currentRoundScore;
+        }
+        
+        const currentWord = wordData[currentWordIndex];
+        messageImage.src = currentWord.image;
+        messageImage.alt = currentWord.english;
+        englishWordElement.textContent = currentWord.english;
+        japaneseWordElement.textContent = currentWord.japanese;
+        roundScoreElement.textContent = currentRoundScore;
+    }
+
+    // Move to next word
+    function nextWord() {
+        currentWordIndex++;
+        if (currentWordIndex < wordData.length) {
+            message.style.display = 'none';
+            initGame();
+        } else {
+            messageTitle.textContent = "Game Completed!";
+            messageTitle.style.color = "#ffcc00";
+            messageImage.src = "https://images.unsplash.com/photo-1533237264986-2c352f5fc0b9?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=60";
+            englishWordElement.textContent = "Congratulations!";
+            japaneseWordElement.textContent = "おめでとう!";
+            roundScoreElement.textContent = currentRoundScore;
+            
+            roundScoresContainer.style.display = 'block';
+            roundScoresList.innerHTML = '';
+            roundScores.forEach((score, index) => {
+                const scoreItem = document.createElement('div');
+                scoreItem.className = 'round-score-item';
+                scoreItem.innerHTML = `
+                    <span>Round ${index + 1}: ${wordData[index].english}</span>
+                    <span>${score} points</span>
+                `;
+                roundScoresList.appendChild(scoreItem);
+            });
+            totalScoreElement.textContent = totalScore;
+            
+            nextBtn.textContent = "Play Again";
+            nextBtn.onclick = () => {
+                currentWordIndex = 0;
+                totalScore = 0;
+                currentRoundScore = 0;
+                roundScores = [];
+                scoreElement.textContent = totalScore;
+                roundScoresContainer.style.display = 'none';
+                message.style.display = 'none';
+                initGame();
+            };
+        }
+    }
+
+    // Event listeners
+    startBtn.addEventListener('click', () => {
+        if (!gameActive && wordData.length > 0) {
+            initGame();
+        }
+    });
+
+    resetBtn.addEventListener('click', () => {
+        currentWordIndex = 0;
+        totalScore = 0;
+        currentRoundScore = 0;
+        roundScores = [];
+        scoreElement.textContent = totalScore;
+        roundScoresContainer.style.display = 'none';
+        message.style.display = 'none';
+        initGame();
+    });
+
+    nextBtn.addEventListener('click', nextWord);
+
+    // Upload CSV functionality
+    uploadBtn.addEventListener('click', () => {
+        csvUpload.click();
+    });
+
+    csvUpload.addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const csvText = e.target.result;
+                parseCustomCSV(csvText);
+            };
+            reader.readAsText(file);
+        }
+    });
+
+    // Keyboard controls - prevent default behavior for arrow keys
+    document.addEventListener('keydown', (e) => {
+        if (!gameActive) return;
+        
+        // Prevent default behavior for arrow keys to avoid scrolling
+        if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'].includes(e.key)) {
+            e.preventDefault();
+        }
+        
+        const player = document.getElementById('player');
+        const step = 30;
+        
+        switch(e.key) {
+            case 'ArrowUp':
+                playerPosition.y = Math.max(20, playerPosition.y - step);
+                break;
+            case 'ArrowDown':
+                playerPosition.y = Math.min(gameArea.offsetHeight - 30, playerPosition.y + step);
+                break;
+            case 'ArrowLeft':
+                playerPosition.x = Math.max(20, playerPosition.x - step);
+                break;
+            case 'ArrowRight':
+                playerPosition.x = Math.min(gameArea.offsetWidth - 30, playerPosition.x + step);
+                break;
+        }
+        
+        player.style.left = playerPosition.x + 'px';
+        player.style.top = playerPosition.y + 'px';
+        
+        checkCollision();
+    });
+
+    // Initialize on load
+    window.addEventListener('load', async () => {
+        currentWordElement.textContent = "Loading words from CSV...";
+        currentWordElement.classList.add('start-message');
+        
+        await loadCSVData();
+        
+        if (wordData.length > 0) {
+            currentWordElement.textContent = "Press Start to Play";
+            wordCountElement.textContent = `1/${wordData.length}`;
+        } else {
+            currentWordElement.textContent = "Failed to load words";
+        }
+    });
+</script>
+ 
+</body>
+</html>
